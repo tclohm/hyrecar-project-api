@@ -1,0 +1,25 @@
+{
+  "name": "hyrecarapi",
+  "version": "1.0.0",
+  "description": "sample project for hyrecar",
+  "main": "index.js",
+  "author": "taylor lohman",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server-express": "^2.24.0",
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "fs-capacitor": "^6.2.0",
+    "graphql": "^15.5.0",
+    "graphql-middleware": "^6.0.10",
+    "graphql-upload": "^12.0.0",
+    "helmet": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.95.4",
+    "knex-cleaner": "^1.3.1",
+    "rand-token": "^1.0.1"
+  }
+}

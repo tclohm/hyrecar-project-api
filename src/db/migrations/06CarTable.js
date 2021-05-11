@@ -7,6 +7,13 @@ exports.up = async knex => {
 		table.string('year').notNullable()
 		table.string('vin').notNullable()
 		table.string('condition').notNullable()
+		table.uuid('carImageId')
+			.unsigned()
+			.notNullable()
+			.references('id')
+			.inTable('carImage')
+			.onDelete('CASCADE')
+			.onUpdate('CASCADE')
 	})
 }
 

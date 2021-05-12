@@ -16,7 +16,7 @@ exports.up = async knex => {
 			.inTable('carOwner')
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE')
-		table.enum('rent', ['reject', 'pending', 'accept', 'noOffer']).defaultTo('noOffer')
+		table.enum('status', ['reject', 'pending', 'accept', 'noOffer', 'cancel', 'completed']).defaultTo('noOffer')
 	})
 }
 

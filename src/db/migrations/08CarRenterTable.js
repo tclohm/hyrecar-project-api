@@ -23,3 +23,4 @@ exports.up = async knex => {
 exports.down = async knex => {
 	await knex.schema.dropTableIfExists('carRenter'); 
 	knex.raw('drop extension if exists "uuid-ossp"');
+}

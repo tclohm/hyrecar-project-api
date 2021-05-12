@@ -9,7 +9,7 @@ exports.up = async knex => {
 			.inTable('user')
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE')
-		table.uuid('profileImageId')
+		table.integer('profileImageId')
 			.unsigned()
 			.notNullable()
 			.references('id')
@@ -25,11 +25,11 @@ exports.up = async knex => {
 		table.string('zipCode').notNullable()
 		table.string('dob').notNullable()
 		table.integer('rating').defaultTo(5)
-		table.json("app_metadata").defaultTo(JSON.stringify("{roles:['car_renter'], permissions:['create:own_content', 'edit:own_content', 'upload:own_media']}"));
+		table.json("app_metadata").defaultTo(JSON.stringify("{roles:['car_renter'], permissions:['create:own_content', 'edit:own_content', 'upload:own_media']}"))
 	})
 }
 
 exports.down = async knex => {
-	await knex.schema.dropTableIfExists('profile'); 
-	knex.raw('drop extension if exists "uuid-ossp"');
+	await knex.schema.dropTableIfExists('profile')
+	knex.raw('drop extension if exists "uuid-ossp"')
 }

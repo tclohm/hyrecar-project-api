@@ -21,6 +21,6 @@ exports.up = async knex => {
 }
 
 exports.down = async knex => {
-	await knex.schema.dropTableIfExists('carOwner'); 
-	knex.raw('drop extension if exists "uuid-ossp"');
+	await knex.schema.dropTableIfExists('carOwner')
+	knex.raw('drop extension if exists "uuid-ossp"')
 }

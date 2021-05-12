@@ -11,6 +11,7 @@ exports.up = async knex => {
 			.onUpdate('CASCADE')
 		table.uuid('profileImageId')
 			.unsigned()
+			.notNullable()
 			.references('id')
 			.inTable('profileImage')
 			.onDelete('CASCADE')
@@ -22,7 +23,7 @@ exports.up = async knex => {
 		table.string('secondaryAddress')
 		table.string('state').notNullable()
 		table.string('zipCode').notNullable()
-		table.string('hasCarIssurance').boolean().defaultTo(false)
+		table.string('dob').notNullable()
 		table.integer('rating').defaultTo(5)
 		table.json("app_metadata").defaultTo(JSON.stringify("{roles:['new_user'], permissions:['create:own_content', 'edit:own_content', 'upload:own_media']}"));
 	})

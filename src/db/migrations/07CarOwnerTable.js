@@ -16,7 +16,9 @@ exports.up = async knex => {
 			.inTable('car')
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE')
-		table.boolean('rented').defaultTo(false)
+		table.boolean('available').defaultTo(true)
+		table.decimal('ratePerDay').notNullable()
+		table.integer('maxMilesPerDay').notNullable()
 	})
 }
 

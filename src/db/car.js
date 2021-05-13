@@ -8,15 +8,35 @@ module.exports = {
 	remove
 }
 
-async function find(filter, query) {
+/* 
+	cars: [
+		{
+			id
+			model
+			owner: {
+				id
+				cars: {}
+				profile: {
+					id
+					avatar: {
+						id
+						image: {
+							location
+						}
+					}
+				}
+				
+			}
+	]
+
+
+*/
+
+async function find(filter) {
 	if (filter) {
 		return db('car').where(filter)
 	}
-
-	const owner = await db('owner').select("*").where({ carId: id })
-
-
-	
+	return db('car').select('*')
 }
 
 function findOne(id) {

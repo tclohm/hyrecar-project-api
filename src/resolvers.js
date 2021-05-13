@@ -5,20 +5,19 @@ const { ApolloErorr, UserInputError } = require('apollo-server-express')
 
 module.exports = {
 	Query: {
+		// car connection
+		cars(_, {filter}, {models}, info) {
+			return models.Car.find(filter)
+		},
+		// car, look into using the parent to get the car
+		car(_, {id}, {models}, info) {
+			return models.Car.findOne()
+		},
 		profile(_, {id}, {models}) {
 			return models.Profile.findOne({ profile: profile.id })
 		},
 		carOwner(_, {id}, {models}) {
 			return models.Owner.findOne({ owner: owner.id })
-		},
-		// car connection
-		cars(_, {filter}, {models}, info) {
-			const query = info.fieldNodes.find(field => field.name.value === info.fieldName)
-			return models.Car.find(filter, query)
-		},
-		// car, look into using the parent to get the car
-		car(_, {id}, {models}) {
-			return models.Car.findOne()
 		},
 	},
 	Mutation: {
@@ -89,7 +88,7 @@ module.exports = {
 		cars(owner, _, {models}) {
 			return models.Owner.findMany({ owner: owner.id })
 		},
-		transactions(owner, {first, after, last, before, filter}, {models}) {
+		transactions(owner, _, {models}) {
 			return models.Transaction.findMany({ owner: owner.id })
 		}
 	},

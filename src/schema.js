@@ -50,15 +50,16 @@ const typeDefs = gql`
 		vin: String!
 		condition: String!
 		image: CarImage!
+		ratePerDay: Int!
+		maxMilesPerDay: Int!
+		available: Boolean!
+		owner: CarOwner!
 	}
 
 	type CarOwner {
 		id: ID!
 		profile: Profile!
-		car: Car!
-		available: Boolean!
-		ratePerDay: Int!
-		maxMilesPerDay: Int!
+		cars: [Car]!	
 	}
 
 	enum Status {
@@ -74,6 +75,7 @@ const typeDefs = gql`
 		id: ID!
 		owner: CarOwner!
 		renter: Profile!
+		car: Car!
 		status: Status! 
 	}
 
@@ -141,11 +143,10 @@ const typeDefs = gql`
 	}
 
 	type Query {
-		availableCars(first: Int, after: String, before: String, filter: CarFilter): CarConnection!
-		profile(id: ID!): Profile
+		profile(id: ID!): Profile 
 		carOwner(id: ID!): CarOwner
-		transactions(first: Int, after: String, before: String, filter: StatusFilter, carOwnerId: ID, renterId: ID): TransactionConnection!
-		transaction(id: ID!): Transaction
+		cars(first: Int, after: String, last: Int, before: String, filter: CarFilter): CarConnection!
+		car(id: ID!): Car
 	}
 
 	type Mutation {
@@ -168,9 +169,12 @@ const typeDefs = gql`
 		updateTransaction(input: TransactionInput): Transaction
 		deleteTransaction(id: ID!): String
 
-		imageUpload(file: Upload!): File
-		deleteImage(fileId: ID!): String
+		uploadProfileImage(file: Upload!): File
+		deleteProfileImage(id: ID!): String
+		uploadCarImage(file: Upload!): File
+		deleteCarImage(id: ID!): String
 	}
 
-
 `;
+
+module.exports = typeDefs

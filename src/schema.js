@@ -35,6 +35,7 @@ const typeDefs = gql`
 		dob: String!
 		rating: Int!
 		renting: Boolean!
+		transactions: [Transaction]!
 	}
 
 	type CarImage {
@@ -59,7 +60,8 @@ const typeDefs = gql`
 	type CarOwner {
 		id: ID!
 		profile: Profile!
-		cars: [Car]!	
+		cars: [Car]!
+		transactions: [Transaction]!	
 	}
 
 	enum Status {
@@ -71,6 +73,25 @@ const typeDefs = gql`
 		COMPLETED
 	}
 
+	enum CarFilter {
+		AUDI
+		MERCEDES
+		LAMBORGHINI
+		ASTON_MARTIN
+		JEEP
+		FORD
+		TOYOTA
+		TESLA
+		BMW
+		MAZDA
+		HONDA
+		KIA
+		FERRARI
+		VOLVO
+		CHRYSLER
+		HYUNDAI
+	}
+
 	type Transaction {
 		id: ID!
 		owner: CarOwner!
@@ -79,29 +100,9 @@ const typeDefs = gql`
 		status: Status! 
 	}
 
-	type TransactionConnection {
-		edges: [TransactionEdges!]!
-		pageInfo: PageInfo
-	}
-
-	type TransactionEdges {
-		cursor: String!
-		node: Transaction!
-	}
-
-	type CarConnection {
-		edges: [CarEdges!!
-		pageInfo: PageInfo
-	}
-
-	type CarEdges {
-		cursor: String!
-		node: Car!
-	}
-
 	input ProfileInput {
-		user: User
-		avatar: ProfileImage
+		userId: ID
+		avatar: ID
 		license: String
 		firstName: String
 		lastName: String
@@ -125,27 +126,27 @@ const typeDefs = gql`
 		year: String
 		vin: String
 		condition: String
-		image: CarImage
+		image: ID
 	}
 
 	input CarOwnerInput {
-		profile: Profile
-		car: Car
+		profile: ID
+		car: ID
 		available: Boolean
 		ratePerDay: Int
 		maxMilesPerDay: Int
 	}
 
 	input TransactionInput {
-		owner: CarOwner
-		renter: Profile
+		owner: ID
+		renter: ID
 		status: Status!
 	}
 
 	type Query {
 		profile(id: ID!): Profile 
 		carOwner(id: ID!): CarOwner
-		cars(first: Int, after: String, last: Int, before: String, filter: CarFilter): CarConnection!
+		cars(filter: CarFilter): [Car]
 		car(id: ID!): Car
 	}
 
@@ -154,6 +155,7 @@ const typeDefs = gql`
 		updateProfile(input: ProfileInput, id: ID!): Profile
 		deleteProfile(id: ID!): String
 
+		addUser(input: UserInput): User
 		updateUser(input: UserInput, id: ID!): User
 		deleteUser(id: ID!): String
 

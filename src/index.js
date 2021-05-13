@@ -1,4 +1,4 @@
-equire("dotenv").config();
+require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 
-const { createToken, hashPassword, verifyPassword, getDatePlusFiveHours } = require('./lib/util');
+const { createToken, hashPassword, verifyPassword, getDatePlusFiveHours } = require('./lib/utils');
 
 const { ApolloServer, AuthenticationError } = require('apollo-server-express');
 const { graphqlUploadExpress } = require('graphql-upload');

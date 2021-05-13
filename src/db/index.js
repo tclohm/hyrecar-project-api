@@ -1,8 +1,10 @@
 module.exports = {
 	models: {
 		Car: require('./car'),
-		User: require('./user'),
+		Owner: require('./owner'),
+		Profile: require('./profile'),
 		Token: require('./token'),
-		Image: require('./image'),
+		Transaction: require('./transaction'),
+		User: require('./user')
 	}
 }

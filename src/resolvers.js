@@ -9,11 +9,12 @@ module.exports = {
 			return models.Profile.findOne({ profile: profile.id })
 		},
 		carOwner(_, {id}, {models}) {
-			return models.CarOwner.findOne({ owner: owner.id })
+			return models.Owner.findOne({ owner: owner.id })
 		},
 		// car connection
-		cars(_, {first, after, last, before, filter}, {models}) {
-			return models.CarOwner.find(first, after, last, before, {})
+		cars(_, {filter}, {models}, info) {
+			const query = info.fieldNodes.find(field => field.name.value === info.fieldName)
+			return models.Car.find(filter, query)
 		},
 		// car, look into using the parent to get the car
 		car(_, {id}, {models}) {
@@ -28,13 +29,16 @@ module.exports = {
 			return models.Profile.update(input, id)
 		},
 		deleteProfile(_, {id}, {models}) {
-			return models.Profile.delete(id)
+			return models.Profile.remove(id)
+		},
+		addUser(_, {input}, {models}) {
+			return models.User.create(input)
 		},
 		updateUser(_, {input, id}, {models}) {
 			return models.User.update(input, id)
 		},
 		deleteUser(_, {id}, {models}) {
-			return models.User.delete(id)
+			return models.User.remove(id)
 		},
 		addCar(_, {input}, {models}) {
 			return models.Car.insert(input)
@@ -43,16 +47,16 @@ module.exports = {
 			return models.Car.update(input, id)
 		},
 		deleteCar(_, {id}, {models}) {
-			return models.Car.delete(id)
+			return models.Car.remove(id)
 		},
 		addCarOwner(_, {input}, {models}) {
-			return models.CarOwner.insert(input)
+			return models.Owner.insert(input)
 		},
 		updateCarOwner(_, {input, id}, {models}) {
-			return models.CarOwner.update(input, id)
+			return models.Owner.update(input, id)
 		},
 		deleteCarOwner(_, {id}, {models}) {
-			return models.CarOwner.delete(id)
+			return models.Owner.remove(id)
 		},
 		addTransaction(_, {input}, {models}) {
 			return models.Transaction.insert(input)
@@ -61,19 +65,19 @@ module.exports = {
 			return models.Transaction.update(input, id)
 		},
 		deleteTransaction(_, {id}, {models}) {
-			return models.Transaction.delete(id)
+			return models.Transaction.remove(id)
 		},
 		uploadProfileImage(_, {file}, {models}) {
-			return models.ProfileImage.insert(file)
+			return models.Profile.Image.insert(file)
 		},
 		deleteProfileImage(_, {id}, {models}) {
-			return models.ProfileImage.delete(id)
+			return models.Profile.Image.remove(id)
 		},
 		uploadCarImage(_, {file}, {models}) {
-			return models.CarImage.insert(file)
+			return models.Car.Image.insert(file)
 		},
 		deleteCarImage(_, {id}, {models}) {
-			return models.CarImage.delete(id)
+			return models.Car.Image.remove(id)
 		}
 	},
 	Profile: {
@@ -83,7 +87,7 @@ module.exports = {
 	},
 	CarOwner: {
 		cars(owner, _, {models}) {
-			return models.CarOwner.findMany({ owner: owner.id })
+			return models.Owner.findMany({ owner: owner.id })
 		},
 		transactions(owner, {first, after, last, before, filter}, {models}) {
 			return models.Transaction.findMany({ owner: owner.id })
@@ -91,7 +95,7 @@ module.exports = {
 	},
 	Car: {
 		owner(car, _, {models}) {
-			return models.CarOwner.findOne({ car: car.id })
+			return models.Owner.findOne({ car: car.id })
 		}
 	}
 }

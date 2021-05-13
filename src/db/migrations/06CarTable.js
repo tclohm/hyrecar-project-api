@@ -14,16 +14,6 @@ exports.up = async knex => {
 			.inTable('carImage')
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE')
-		table.uuid('ownerId')
-			.unsigned()
-			.notNullable()
-			.references('id')
-			.inTable('owner')
-			.onDelete('CASCADE')
-			.onUpdate('CASCADE')
-		table.boolean('available').defaultTo(true)
-		table.decimal('ratePerDay').notNullable()
-		table.integer('maxMilesPerDay').notNullable()
 	})
 }
 

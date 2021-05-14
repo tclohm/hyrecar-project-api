@@ -7,11 +7,11 @@ module.exports = {
 	Query: {
 		// car connection
 		cars(_, {filter}, {models}, info) {
-			return models.Car.find(filter)
+			return models.Owner.find(filter)
 		},
 		// car, look into using the parent to get the car
 		car(_, {id}, {models}, info) {
-			return models.Car.findOne()
+			return models.Car.findOne({id})
 		},
 		profile(_, {id}, {models}) {
 			return models.Profile.findOne({ profile: profile.id })
@@ -84,17 +84,17 @@ module.exports = {
 			return models.Transaction.findMany({ profile: profile.id })
 		}
 	},
-	CarOwner: {
-		cars(owner, _, {models}) {
-			return models.Owner.findMany({ owner: owner.id })
+	Car: {
+		owner(carAndOwner, _, {models}) {
+			return models.Owner.findOne({ id: carAndOwner.profileId })
 		},
-		transactions(owner, _, {models}) {
-			return models.Transaction.findMany({ owner: owner.id })
+		image(car, _, {models}) {
+			return models.Car.findImage({ id: car.carImageId })
 		}
 	},
-	Car: {
-		owner(car, _, {models}) {
-			return models.Owner.findOne({ car: car.id })
+	CarOwner: {
+		profile(owner, _, {}) {
+			return owner
 		}
 	}
 }

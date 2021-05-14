@@ -2,6 +2,7 @@ const db = require('../config/knex')
 
 module.exports = {
 	find,
+	findImage,
 	findOne,
 	create,
 	update,
@@ -28,8 +29,6 @@ module.exports = {
 				
 			}
 	]
-
-
 */
 
 async function find(filter) {
@@ -39,8 +38,17 @@ async function find(filter) {
 	return db('car').select('*')
 }
 
-function findOne(id) {
-	return db('car').where(id).select('*')
+async function findImage(id) {
+	const image = await db('carImage').where(id).first('*')
+	return {
+		id: image.id,
+		image
+	}
+}
+
+async function findOne(id) {
+	const car = await db('car').join('carAndOwner as cao', 'cao.carId', 'car.id').where('car.id', id.id).first('*')
+	return car
 }
 
 function create(input) {

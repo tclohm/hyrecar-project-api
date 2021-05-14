@@ -8,15 +8,20 @@ module.exports = {
 	remove
 }
 
-function find(filter) {
+async function find(filter) {
 	if (filter) {
 		return db('carAndOwner').where(filter).select('*')
 	}
-	return db('carAndOwner').select('*')
+	const carOwnerArr = await db('carAndOwner').join('car', 'car.id', 'carId').select('*')
+	carOwnerArr.forEach(obj => {
+		const { id, carId, rest } = obj
+		return Object.assign({}, rest, { id: carId })
+	})
+	return carOwnerArr
 }
 
-function findOne(id) {
-	return db('carAndOwner').where(id).select('*')
+async function findOne(id) {
+	return db('profile').where(id).first('*')
 }
 
 function create(input) {

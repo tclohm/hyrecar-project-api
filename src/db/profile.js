@@ -2,13 +2,29 @@ const db = require('../config/knex')
 
 module.exports = {
 	findOne,
+	findImage,
+	findUser,
 	create,
 	update,
 	remove
 }
 
-function findOne(id) {
-	return db('profile').where(id).select('*')
+
+async function findOne(id) {
+	return db('profile').where(id).first('*')
+}
+
+async function findImage(id) {
+	const image = await db('profileImage').where(id).first('*')
+	return { id: image.id, image }
+}
+
+async function findUser(id) {
+	const user = await db('profile')
+		.join('user', 'user.id', 'profile.userId')
+		.where(id)
+		.first('*')
+	return user
 }
 
 function create(input) {

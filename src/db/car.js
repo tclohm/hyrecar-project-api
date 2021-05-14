@@ -40,14 +40,14 @@ async function find(filter) {
 
 async function findImage(id) {
 	const image = await db('carImage').where(id).first('*')
-	return {
-		id: image.id,
-		image
-	}
+	return { id: image.id, image }
 }
 
+// MARK: -- car with carAndOwner
 async function findOne(id) {
-	const car = await db('car').join('carAndOwner as cao', 'cao.carId', 'car.id').where('car.id', id.id).first('*')
+	const car = await db('car')
+	.join('carAndOwner as cao', 'cao.carId', 'car.id')
+	.where('car.id', id.id).first('*')
 	return car
 }
 

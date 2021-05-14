@@ -1,28 +1,26 @@
 exports.up = async knex => {
 	knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
-	return await knex.schema.createTable('carOwner', table => {
+	return await knex.schema.createTable('transaction', table => {
 		table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'))
-		table.uuid('profileId')
+		table.uuid('renterId')
 			.unsigned()
 			.notNullable()
 			.references('id')
 			.inTable('profile')
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE')
-		table.uuid('carId')
+		table.uuid('carAndOwnerId')
 			.unsigned()
 			.notNullable()
 			.references('id')
-			.inTable('car')
+			.inTable('carAndOwner')
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE')
-		table.boolean('available').defaultTo(true)
-		table.decimal('ratePerDay').notNullable()
-		table.integer('maxMilesPerDay').notNullable()
+		table.enum('status', ['reject', 'pending', 'accept', 'noOffer', 'cancel', 'completed']).defaultTo('noOffer')
 	})
 }
 
 exports.down = async knex => {
-	await knex.schema.dropTableIfExists('carOwner')
+	await knex.schema.dropTableIfExists('transaction')
 	knex.raw('drop extension if exists "uuid-ossp"')
 }

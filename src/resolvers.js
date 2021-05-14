@@ -14,10 +14,10 @@ module.exports = {
 			return models.Car.findOne({id})
 		},
 		profile(_, {id}, {models}) {
-			return models.Profile.findOne({ profile: profile.id })
+			return models.Profile.findOne({id})
 		},
-		carOwner(_, {id}, {models}) {
-			return models.Owner.findOne({ owner: owner.id })
+		owner(_, {id}, {models}) {
+			return models.Owner.findOne({ profileId: id })
 		},
 	},
 	Mutation: {
@@ -81,12 +81,18 @@ module.exports = {
 	},
 	Profile: {
 		transactions(profile, {first, after, last, before, filter}, {models}) {
-			return models.Transaction.findMany({ profile: profile.id })
+			return models.Transaction.findRenter({ renterId: profile.id })
+		},
+		avatar(profile, _, {models}) {
+			return models.Profile.findImage({ id: profile.profileImageId })
+		},
+		user(profile, _, {models}) {
+			return models.Profile.findUser({ userId: profile.userId })
 		}
 	},
 	Car: {
 		owner(carAndOwner, _, {models}) {
-			return models.Owner.findOne({ id: carAndOwner.profileId })
+			return models.Owner.findOne({ profileId: carAndOwner.profileId })
 		},
 		image(car, _, {models}) {
 			return models.Car.findImage({ id: car.carImageId })

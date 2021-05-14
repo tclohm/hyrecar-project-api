@@ -145,7 +145,7 @@ const typeDefs = gql`
 
 	type Query {
 		profile(id: ID!): Profile 
-		carOwner(id: ID!): CarOwner
+		owner(id: ID!): CarOwner
 		cars(filter: CarFilter): [Car]
 		car(id: ID!): Car
 	}

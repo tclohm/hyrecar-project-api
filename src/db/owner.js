@@ -12,6 +12,7 @@ async function find(filter) {
 	if (filter) {
 		return db('carAndOwner').where(filter).select('*')
 	}
+
 	const carOwnerArr = await db('carAndOwner').join('car', 'car.id', 'carId').select('*')
 	carOwnerArr.forEach(obj => {
 		const { id, carId, rest } = obj
@@ -21,7 +22,10 @@ async function find(filter) {
 }
 
 async function findOne(id) {
-	return db('profile').where(id).first('*')
+	return db('carAndOwner')
+		.join('profile', 'profile.id', 'profileId')
+		.where(id)
+		.first('*')
 }
 
 function create(input) {

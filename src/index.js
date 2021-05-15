@@ -50,6 +50,106 @@ const server = new ApolloServer({
 
 app.use(express.urlencoded({ extended: true }));
 
+app.post('/signup', async (req, res) => {
+	const { email, password, owner } = req.body
+	try {
+		const exists = await model.User.findOne({ email })
+		if (exists) {
+			res.status(404).json({ success: false })
+			return
+		}
+
+		const hashedPassword = await hashedPassword(password)
+
+		const app_metadata = {
+			roles: ['renter'],
+			permissions: ['create:own_content', 'edit:own_content', 'upload:own_media'],
+		}
+
+		if (owner) {
+			app_metadata.roles.push('owner')
+		}
+
+		const user = await models.User.create({
+			email,
+			password
+		})
+
+		if (user) {
+			const { id } = user
+			const expiresAt = getDatePlusFiveHours()
+			const info = Object.assign({}, { sub: id, email, app_metadata, expiresAt })
+			const token = createToken(info)
+
+			const savedToken = await models.Token.create({
+				refreshToken: token,
+				userId: id,
+				expiresAt
+			})
+
+			console.log('saved token')
+
+			if (!savedToken) {
+				res.status.json({ success: false })
+			}
+
+			res.cookie('token', token, {
+				httpOnly: true,
+				secure: true,
+				maxAge: 18000000,
+				sameSite: 'Strict'
+			})
+
+			res.status(200).json({ success: true })
+		}
+	} catch (err) {
+		res.json({ sucess: false })
+	}
+})
+
+app.post('/login', async (req, res) => {
+	const { email, password } = req.body;
+
+	try {
+		const user = await models.User.findOne({ email })
+		if (!user) {
+			res.status(404).json({ success: false })
+			return
+		}
+
+		const valid = verifyPassword(password, user.password)
+
+		if (valid) {
+			const { id, email, app_metadata } = user
+			const expiresAt = getDatePlusFiveHours()
+			const info = Object.assign({}, { sub: id, email, app_metadata, expiresAt })
+			const token = createToken(info)
+
+			const savedToken = await models.Token.create({
+				refreshToken: token,
+				userId: id,
+				expiresAt
+			})
+
+			console.log('saved token')
+
+			if (!savedToken) {
+				res.status.json({ success: false })
+			}
+
+			res.cookie('token', token, {
+				httpOnly: true,
+				secure: true,
+				maxAge: 18000000,
+				sameSite: 'Strict'
+			})
+
+			res.status(200).json({ success: true })
+		}
+	} catch (err) {
+		res.json({ success: false })
+	}
+})
 
 app.get('/', (req, res) => {
 	res.json({

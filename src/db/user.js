@@ -7,8 +7,8 @@ module.exports = {
 	remove
 }
 
-function findOne(id) {
-	return db('user').where(id).select('*')
+function findOne(filter) {
+	return db('user').where(filter).select('*')
 }
 
 function create(input) {

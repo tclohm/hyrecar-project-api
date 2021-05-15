@@ -1,11 +1,11 @@
 exports.up = knex => {
 	return knex.schema.createTable('token', table => {
 		table.increments()
-		table.uuid('profileId')
+		table.uuid('userId')
 			 .unsigned()
 			 .notNullable()
 			 .references('id')
-			 .inTable('profile')
+			 .inTable('user')
 			 .onDelete('CASCADE')
 			 .onUpdate('CASCADE')
 		table.string('refreshToken', 800).notNullable()

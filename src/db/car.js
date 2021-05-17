@@ -6,7 +6,10 @@ module.exports = {
 	findOne,
 	create,
 	update,
-	remove
+	remove,
+	Image: {
+		insert
+	}
 }
 
 /* 
@@ -62,4 +65,9 @@ function update(input, id) {
 async function remove(id) {
 	const [identifier] = await db('car').where(id).del().returning('id')
 	return `deleted ${identifier}`
+}
+
+async function insert(input) {
+	const [id] = await db('carImage').insert(input).returning("id");
+	return findImage(id);
 }

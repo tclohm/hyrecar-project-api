@@ -12,12 +12,14 @@ function findProfile(id) {
 	return db('user').join('profile', 'user.id', 'profile.userId').where('profile.userId', '=', id.userId).first('*')
 }
 
-function findOne(filter) {
-	return db('user').where(filter).select('*')
+async function findOne(filter) {
+	const user = await db('user').where(filter).first('*')
+	return user
 }
 
-function create(input) {
-	return db('user').insert(input).returning('*')
+async function create(input) {
+	const [user] = await db('user').insert(input).returning('*')
+	return findOne({ id: user.id })
 }
 
 function update(input, id) {

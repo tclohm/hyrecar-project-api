@@ -24,62 +24,148 @@ module.exports = {
 		}
 	},
 	Mutation: {
-		addProfile(_, {input}, {models}) {
+		addProfile(_, {input}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Profile.insert(input)
 		},
-		updateProfile(_, {input, id}, {models}) {
+		updateProfile(_, {input, id}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Profile.update(input, id)
 		},
-		deleteProfile(_, {id}, {models}) {
+		deleteProfile(_, {id}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Profile.remove(id)
 		},
-		addUser(_, {input}, {models}) {
-			return models.User.create(input)
-		},
-		updateUser(_, {input, id}, {models}) {
+		updateUser(_, {input, id}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.User.update(input, id)
 		},
-		deleteUser(_, {id}, {models}) {
+		deleteUser(_, {id}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.User.remove(id)
 		},
-		addCar(_, {input}, {models}) {
+		addCar(_, {input}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Car.insert(input)
 		},
-		updateCar(_, {input, id}, {models}) {
+		updateCar(_, {input, id}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Car.update(input, id)
 		},
-		deleteCar(_, {id}, {models}) {
+		deleteCar(_, {id}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Car.remove(id)
 		},
-		addCarOwner(_, {input}, {models}) {
+		addCarOwner(_, {input}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Owner.insert(input)
 		},
-		updateCarOwner(_, {input, id}, {models}) {
+		updateCarOwner(_, {input, id}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Owner.update(input, id)
 		},
-		deleteCarOwner(_, {id}, {models}) {
+		deleteCarOwner(_, {id}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Owner.remove(id)
 		},
-		addTransaction(_, {input}, {models}) {
+		addTransaction(_, {input}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Transaction.insert(input)
 		},
-		updateTransaction(_, {input}, {models}) {
+		updateTransaction(_, {input}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Transaction.update(input, id)
 		},
-		deleteTransaction(_, {id}, {models}) {
+		deleteTransaction(_, {id}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null;
+			}
 			return models.Transaction.remove(id)
 		},
-		uploadProfileImage(_, {file}, {models}) {
-			return models.Profile.Image.insert(file)
+		async uploadProfileImage(_, {file}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('create:own_content')) {
+				return null;
+			}
+
+			console.log("file", file)
+
+			const { filename, mimetype, createReadStream, encoding } = await file.file;
+			let stream = createReadStream();
+			let { name, ext } = parse(filename);
+			name = name.replace(/([^a-z0-9 ]+)/gi, '-').replace(' ', '_');
+			let path = join(__dirname, `../static/assets/images/faces/${name}${ext}`);
+
+			await new Promise((resolve, reject) => {
+				const writeStream = fs.createWriteStream(path);
+				writeStream.on('finish', resolve);
+				writeStream.on('error', (error) => {
+					fs.unlink(path, () => {
+						reject(error);
+					});
+				});
+				stream.on('error', (error) => writeStream.destroy(error));
+				stream.pipe(writeStream);
+			});
+			
+			// MARK: -- Record the file metadata in the Database
+			const location = path.split('api')[1];
+
+			const image = await models.Profile.Image.insert({ filename, mimetype, encoding, location });
+			return image
 		},
-		deleteProfileImage(_, {id}, {models}) {
-			return models.Profile.Image.remove(id)
-		},
-		uploadCarImage(_, {file}, {models}) {
-			return models.Car.Image.insert(file)
-		},
-		deleteCarImage(_, {id}, {models}) {
-			return models.Car.Image.remove(id)
+		async uploadCarImage(_, {file}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('create:own_content')) {
+				return null;
+			}
+			const { filename, mimetype, createReadStream, encoding } = await file.file;
+			let stream = createReadStream();
+			let { name, ext } = parse(filename);
+			name = name.replace(/([^a-z0-9 ]+)/gi, '-').replace(' ', '_');
+			let path = join(__dirname, `../static/assets/images/cars/${name}${ext}`);
+
+			await new Promise((resolve, reject) => {
+				const writeStream = fs.createWriteStream(path);
+				writeStream.on('finish', resolve);
+				writeStream.on('error', (error) => {
+					fs.unlink(path, () => {
+						reject(error);
+					});
+				});
+				stream.on('error', (error) => writeStream.destroy(error));
+				stream.pipe(writeStream);
+			});
+			
+			// MARK: -- Record the file metadata in the Database
+			const location = path.split('api')[1];
+
+			const image = await models.Cars.Image.insert({ filename, mimetype, encoding, location });
+			return image
 		}
 	},
 	Profile: {

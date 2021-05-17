@@ -1,5 +1,13 @@
 const db = require('../config/knex')
 
+module.exports = {
+	findOne,
+	create,
+	findByIdAndUpdate,
+	findByIdAndDelete,
+	saveRefreshToken
+}
+
 function findOne(filter) {
 	return db('token').where(filter).first(); 
 }

@@ -33,16 +33,21 @@ app.use("/static/assets/images", express.static(path.join(__dirname, "../static/
 app.use(graphqlUploadExpress({ maxFileSize: 1000000000, maxFiles: 10 }));
 
 const context = ({ req, res }) => {
-	const token = req.headers.authorization || ''
+	const token = req.cookies['jwt'] || ''
 
 	try {
-		const { id } = jwt.verifyPassword(token.split(' ')[1], SECRET_KEY)
-		return { req, res, models, id }
+
+		if (token !== '') {
+			console.log(token)
+			const { sub, app_metadata } = jwt.verify(token, process.env.JWT_SECRET)
+			return { req, res, models, sub, app_metadata }
+		}
+
+		return { req, res, models }
 	} catch (error) {
+		console.log("error", error)
 		return { req, res, models }
 	}
-
-	
 
 } 
 
@@ -59,35 +64,38 @@ const server = new ApolloServer({
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/signup', async (req, res) => {
-	const { email, password, owner } = req.body
+	const { email, password } = req.body
 	try {
-		const exists = await model.User.findOne({ email })
+		const exists = await models.User.findOne({ email })
+
 		if (exists) {
 			res.status(404).json({ success: false })
 			return
 		}
 
-		const hashedPassword = await hashedPassword(password)
+		console.log("hashing")
+
+		const hashedPassword = await hashPassword(password)
 
 		const app_metadata = {
 			roles: ['renter'],
 			permissions: ['create:own_content', 'edit:own_content', 'upload:own_media'],
 		}
 
-		if (owner) {
-			app_metadata.roles.push('owner')
-		}
-
 		const user = await models.User.create({
 			email,
-			password
+			password: hashedPassword
 		})
 
+		console.log("user created")
+
+		
 		if (user) {
 			const { id } = user
 			const expiresAt = getDatePlusFiveHours()
-			const info = Object.assign({}, { sub: id, email, app_metadata, expiresAt })
+			const info = Object.assign({}, { sub: id, app_metadata, expiresAt })
 			const token = createToken(info)
+
 
 			const savedToken = await models.Token.create({
 				refreshToken: token,
@@ -101,7 +109,7 @@ app.post('/signup', async (req, res) => {
 				res.status.json({ success: false })
 			}
 
-			res.cookie('token', token, {
+			res.cookie('jwt', token, {
 				httpOnly: true,
 				secure: true,
 				maxAge: 18000000,
@@ -111,6 +119,7 @@ app.post('/signup', async (req, res) => {
 			res.status(200).json({ success: true })
 		}
 	} catch (err) {
+		console.log(err)
 		res.json({ sucess: false })
 	}
 })
@@ -128,9 +137,9 @@ app.post('/login', async (req, res) => {
 		const valid = verifyPassword(password, user.password)
 
 		if (valid) {
-			const { id, email, app_metadata } = user
+			const { id, app_metadata } = user
 			const expiresAt = getDatePlusFiveHours()
-			const info = Object.assign({}, { sub: id, email, app_metadata, expiresAt })
+			const info = Object.assign({}, { sub: id, app_metadata, expiresAt })
 			const token = createToken(info)
 
 			const savedToken = await models.Token.create({
@@ -145,7 +154,7 @@ app.post('/login', async (req, res) => {
 				res.status.json({ success: false })
 			}
 
-			res.cookie('token', token, {
+			res.cookie('jwt', token, {
 				httpOnly: true,
 				secure: true,
 				maxAge: 18000000,

@@ -1,10 +1,15 @@
 const db = require('../config/knex');
 
 module.exports = {
+	findProfile,
 	findOne,
 	create,
 	update,
 	remove
+}
+
+function findProfile(id) {
+	return db('user').join('profile', 'user.id', 'profile.userId').where('profile.userId', '=', id.userId).first('*')
 }
 
 function findOne(filter) {

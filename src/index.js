@@ -33,8 +33,16 @@ app.use("/static/assets/images", express.static(path.join(__dirname, "../static/
 app.use(graphqlUploadExpress({ maxFileSize: 1000000000, maxFiles: 10 }));
 
 const context = ({ req, res }) => {
+	const token = req.headers.authorization || ''
+
+	try {
+		const { id } = jwt.verifyPassword(token.split(' ')[1], SECRET_KEY)
+		return { req, res, models, id }
+	} catch (error) {
+		return { req, res, models }
+	}
+
 	
-	return { req, res, models }
 
 } 
 

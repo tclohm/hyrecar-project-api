@@ -148,6 +148,7 @@ const typeDefs = gql`
 		owner(id: ID!): CarOwner
 		cars(filter: CarFilter): [Car]
 		car(id: ID!): Car
+		user(id: ID!): Profile
 	}
 
 	type Mutation {

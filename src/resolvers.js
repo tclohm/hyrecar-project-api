@@ -19,6 +19,9 @@ module.exports = {
 		owner(_, {id}, {models}) {
 			return models.Owner.findOne({ profileId: id })
 		},
+		user(_, {id}, {models}) {
+			return models.User.findProfile({ userId: id })
+		}
 	},
 	Mutation: {
 		addProfile(_, {input}, {models}) {

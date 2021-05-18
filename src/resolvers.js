@@ -112,8 +112,8 @@ module.exports = {
 			if (!sub || !app_metadata.permissions.includes('create:own_content')) {
 				return null;
 			}
-
-			console.log("file", file)
+			console.log("hello\n\n\n")
+			console.log("file", file.file)
 
 			const { filename, mimetype, createReadStream, encoding } = await file.file;
 			let stream = createReadStream();
@@ -136,7 +136,7 @@ module.exports = {
 			// MARK: -- Record the file metadata in the Database
 			const location = path.split('api')[1];
 
-			const image = await models.Profile.Image.insert({ filename, mimetype, encoding, location });
+			const image = await models.Profile.Image.insert({ name: filename, mimetype, encoding, location });
 			return image
 		},
 		async uploadCarImage(_, {file}, {sub, app_metadata, models}) {
@@ -164,7 +164,7 @@ module.exports = {
 			// MARK: -- Record the file metadata in the Database
 			const location = path.split('api')[1];
 
-			const image = await models.Cars.Image.insert({ filename, mimetype, encoding, location });
+			const image = await models.Cars.Image.insert({ name: filename, mimetype, encoding, location });
 			return image
 		}
 	},

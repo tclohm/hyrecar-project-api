@@ -19,7 +19,7 @@ async function findOne(id) {
 
 async function findImage(id) {
 	const image = await db('profileImage').where(id).first('*')
-	return image
+	return { id: image.id, image }
 }
 
 async function findUser(id) {

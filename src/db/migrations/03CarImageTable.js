@@ -2,7 +2,7 @@ exports.up = async knex => {
 	knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
 	return await knex.schema.createTable('carImage', table => {
 		table.increments('id')
-		table.string('filename').notNullable()
+		table.string('name').notNullable()
 		table.string('mimetype').notNullable()
 		table.string('encoding').notNullable()
 		table.string('location').notNullable()

@@ -30,8 +30,11 @@ async function findUser(id) {
 	return user
 }
 
-function create(input) {
-	return db('profile').insert(input).returning('*')
+async function create(input) {
+	const profiles = await db('profile').insert(input).returning('*')
+	const profile = profiles[0]
+	console.log(profile)
+	return findOne({ id: profile.id })
 }
 
 function update(input, id) {

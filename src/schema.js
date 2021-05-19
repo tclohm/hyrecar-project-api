@@ -29,7 +29,6 @@ const typeDefs = gql`
 		firstName: String!
 		lastName: String!
 		rating: Int!
-		renting: Boolean!
 		transactions: [Transaction]!
 	}
 
@@ -97,7 +96,7 @@ const typeDefs = gql`
 
 	input ProfileInput {
 		userId: ID
-		avatar: ID
+		profileImageId: ID
 		license: String
 		firstName: String
 		lastName: String
@@ -134,11 +133,12 @@ const typeDefs = gql`
 	}
 
 	type Query {
-		profile(id: ID!): Profile 
+		profile: Profile 
 		owner(id: ID!): CarOwner
 		cars(filter: CarFilter): [Car]
 		car(id: ID!): Car
 		user(id: ID!): Profile
+		getUser: User
 	}
 
 	type Mutation {
@@ -153,16 +153,12 @@ const typeDefs = gql`
 		updateCar(input: CarInput): Car
 		deleteCar(id: ID!): String
 
-		addCarOwner(input: CarOwnerInput!): CarOwner
-		updateCarOwner(input: CarOwnerInput, id: ID!): CarOwner
-		deleteCarOwner(id: ID!): String
-
 		addTransaction(input: TransactionInput): Transaction
 		updateTransaction(input: TransactionInput): Transaction
 		deleteTransaction(id: ID!): String
 
-		uploadProfileImage(file: Upload!): File
-		uploadCarImage(file: Upload!): File
+		uploadProfileImage(file: Upload!): ProfileImage
+		uploadCarImage(file: Upload!): CarImage
 	}
 
 `;

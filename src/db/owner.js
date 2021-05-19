@@ -18,6 +18,7 @@ async function find(filter) {
 		const { id, carId, rest } = obj
 		return Object.assign({}, rest, { id: carId })
 	})
+	console.log(carOwnerArr)
 	return carOwnerArr
 }
 
@@ -28,7 +29,9 @@ async function findOne(id) {
 		.first('*')
 }
 
-function create(input) {
+async function create(input) {
+	const car = await db('car').insert(input).returning('*')
+
 	return db('carAndOwner').insert(input).returning('*')
 }
 

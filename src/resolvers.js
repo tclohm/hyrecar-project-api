@@ -13,14 +13,23 @@ module.exports = {
 		car(_, {id}, {models}, info) {
 			return models.Car.findOne({id})
 		},
-		profile(_, {id}, {models}) {
-			return models.Profile.findOne({id})
+		profile(_, args, {sub, app_metadata, models}) {
+			if (sub) {
+				return models.Profile.findOne({ userId: sub })
+			}
+			return null
 		},
 		owner(_, {id}, {models}) {
 			return models.Owner.findOne({ profileId: id })
 		},
 		user(_, {id}, {models}) {
 			return models.User.findProfile({ userId: id })
+		},
+		getUser(_, args, {sub, app_metadata, models}) {
+			if (sub) {
+				return models.User.findOne({ id: sub })
+			}
+			return null
 		}
 	},
 	Mutation: {
@@ -28,7 +37,7 @@ module.exports = {
 			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
 				return null;
 			}
-			return models.Profile.insert(input)
+			return models.Profile.create(input)
 		},
 		updateProfile(_, {input, id}, {sub, app_metadata, models}) {
 			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
@@ -71,24 +80,6 @@ module.exports = {
 				return null;
 			}
 			return models.Car.remove(id)
-		},
-		addCarOwner(_, {input}, {sub, app_metadata, models}) {
-			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
-				return null;
-			}
-			return models.Owner.insert(input)
-		},
-		updateCarOwner(_, {input, id}, {sub, app_metadata, models}) {
-			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
-				return null;
-			}
-			return models.Owner.update(input, id)
-		},
-		deleteCarOwner(_, {id}, {sub, app_metadata, models}) {
-			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
-				return null;
-			}
-			return models.Owner.remove(id)
 		},
 		addTransaction(_, {input}, {sub, app_metadata, models}) {
 			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
@@ -137,6 +128,7 @@ module.exports = {
 			const location = path.split('api')[1];
 
 			const image = await models.Profile.Image.insert({ name: filename, mimetype, encoding, location });
+			console.log('image saved', image)
 			return image
 		},
 		async uploadCarImage(_, {file}, {sub, app_metadata, models}) {
@@ -173,9 +165,11 @@ module.exports = {
 			return models.Transaction.findRenter({ renterId: profile.id })
 		},
 		avatar(profile, _, {models}) {
+			console.log("find avatar")
 			return models.Profile.findImage({ id: profile.profileImageId })
 		},
 		user(profile, _, {models}) {
+			console.log("find user")
 			return models.Profile.findUser({ userId: profile.userId })
 		}
 	},

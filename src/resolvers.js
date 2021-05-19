@@ -1,6 +1,6 @@
 const fs = require('fs')
 const { parse, join } = require('path')
-const { ApolloErorr, UserInputError } = require('apollo-server-express')
+const { ApolloError, UserInputError } = require('apollo-server-express')
 
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
 			return null
 		},
 		owner(_, {id}, {models}) {
-			return models.Owner.findOne({ profileId: id })
+			return models.Owner.find({ profileId: id })
 		},
 		user(_, {id}, {models}) {
 			return models.User.findProfile({ userId: id })
@@ -63,11 +63,16 @@ module.exports = {
 			}
 			return models.User.remove(id)
 		},
-		addCar(_, {input}, {sub, app_metadata, models}) {
+		async addCar(_, {input}, {sub, app_metadata, models}) {
 			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
 				return null;
 			}
-			return models.Car.insert(input)
+			// MARK: -- clean this up
+			const { make, model, year, vin, condition, carImageId, ...carOwnerFields } = input
+			const { id } = await models.Car.create({ make, model, year, vin, condition, carImageId })
+			const carOwnerInput = Object.assign({}, carOwnerFields, {carId: id})
+			const car = await models.Owner.create(carOwnerInput)
+			return car
 		},
 		updateCar(_, {input, id}, {sub, app_metadata, models}) {
 			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
@@ -75,10 +80,12 @@ module.exports = {
 			}
 			return models.Car.update(input, id)
 		},
-		deleteCar(_, {id}, {sub, app_metadata, models}) {
+		async deleteCar(_, {id}, {sub, app_metadata, models}) {
 			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
 				return null;
 			}
+			console.log("in delete", id)
+			await models.Owner.remove(id)
 			return models.Car.remove(id)
 		},
 		addTransaction(_, {input}, {sub, app_metadata, models}) {
@@ -103,8 +110,6 @@ module.exports = {
 			if (!sub || !app_metadata.permissions.includes('create:own_content')) {
 				return null;
 			}
-			console.log("hello\n\n\n")
-			console.log("file", file.file)
 
 			const { filename, mimetype, createReadStream, encoding } = await file.file;
 			let stream = createReadStream();
@@ -128,7 +133,6 @@ module.exports = {
 			const location = path.split('api')[1];
 
 			const image = await models.Profile.Image.insert({ name: filename, mimetype, encoding, location });
-			console.log('image saved', image)
 			return image
 		},
 		async uploadCarImage(_, {file}, {sub, app_metadata, models}) {
@@ -156,7 +160,7 @@ module.exports = {
 			// MARK: -- Record the file metadata in the Database
 			const location = path.split('api')[1];
 
-			const image = await models.Cars.Image.insert({ name: filename, mimetype, encoding, location });
+			const image = await models.Car.Image.insert({ name: filename, mimetype, encoding, location });
 			return image
 		}
 	},
@@ -175,6 +179,7 @@ module.exports = {
 	},
 	Car: {
 		owner(carAndOwner, _, {models}) {
+			console.log("CAR?")
 			return models.Owner.findOne({ profileId: carAndOwner.profileId })
 		},
 		image(car, _, {models}) {
@@ -184,6 +189,9 @@ module.exports = {
 	CarOwner: {
 		profile(owner, _, {}) {
 			return owner
+		},
+		cars(owner, _, {}) {
+			console.log("cars")
 		}
 	}
 }

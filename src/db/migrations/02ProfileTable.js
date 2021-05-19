@@ -20,7 +20,7 @@ exports.up = async knex => {
 		table.string('firstName').notNullable()
 		table.string('lastName').notNullable()
 		table.integer('rating').defaultTo(5)
-		table.json("app_metadata").defaultTo(JSON.stringify("{roles:['renter'], permissions:['create:own_content', 'edit:own_content', 'upload:own_media']}"))
+		table.json("app_metadata").defaultTo(JSON.stringify({roles:['renter'], permissions:['create:own_content', 'edit:own_content', 'upload:own_media']}))
 	})
 }
 

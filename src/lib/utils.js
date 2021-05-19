@@ -15,9 +15,11 @@ module.exports = {
 
 function createToken(info) {
 	console.log("creating token")
+	console.log(info)
 	if (!info.app_metadata.roles) {
 		throw new UserInputError("error, not complete");
 	}
+
 
 	return jwt.sign(
 		{

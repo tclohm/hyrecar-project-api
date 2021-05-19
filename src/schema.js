@@ -115,15 +115,12 @@ const typeDefs = gql`
 		year: String
 		vin: String
 		condition: String
-		image: ID
-	}
-
-	input CarOwnerInput {
-		profile: ID
-		car: ID
-		available: Boolean
 		ratePerDay: Int
 		maxMilesPerDay: Int
+		available: Boolean
+		carImageId: ID
+		profileId: ID
+
 	}
 
 	input TransactionInput {
@@ -134,7 +131,7 @@ const typeDefs = gql`
 
 	type Query {
 		profile: Profile 
-		owner(id: ID!): CarOwner
+		owner(id: ID!): [Car]
 		cars(filter: CarFilter): [Car]
 		car(id: ID!): Car
 		user(id: ID!): Profile

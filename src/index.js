@@ -96,7 +96,6 @@ app.post('/signup', async (req, res) => {
 			const info = Object.assign({}, { sub: id, app_metadata, expiresAt })
 			const token = createToken(info)
 
-
 			const savedToken = await models.Token.create({
 				refreshToken: token,
 				userId: id,
@@ -129,15 +128,18 @@ app.post('/login', async (req, res) => {
 
 	try {
 		const user = await models.User.findOne({ email })
+
 		if (!user) {
 			res.status(404).json({ success: false })
 			return
 		}
 
-		const valid = verifyPassword(password, user.password)
+		const valid = await verifyPassword(password, user.password)
 
 		if (valid) {
-			const { id, app_metadata } = user
+			const { id } = user
+			const { app_metadata } = await models.Profile.findOne({ userId: id })
+			console.log(app_metadata)
 			const expiresAt = getDatePlusFiveHours()
 			const info = Object.assign({}, { sub: id, app_metadata, expiresAt })
 			const token = createToken(info)
@@ -162,7 +164,18 @@ app.post('/login', async (req, res) => {
 			})
 
 			res.status(200).json({ success: true })
+		} else {
+			res.json({ success: false })
 		}
+	} catch (err) {
+		res.json({ success: false })
+	}
+})
+
+app.get('/logout', (req, res) => {
+	try {
+		res.clearCookie('jwt')
+		res.status(200).json({ success: true})
 	} catch (err) {
 		res.json({ success: false })
 	}

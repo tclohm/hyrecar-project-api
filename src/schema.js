@@ -4,7 +4,7 @@ const typeDefs = gql`
 	scalar Upload
 
 	type File {
-		filename: String!
+		name: String!
 		mimetype: String!
 		encoding: String!
 		location: String!
@@ -28,13 +28,7 @@ const typeDefs = gql`
 		license: String!
 		firstName: String!
 		lastName: String!
-		address: String!
-		secondaryAddress: String!
-		state: String!
-		zipCode: String!
-		dob: String!
 		rating: Int!
-		renting: Boolean!
 		transactions: [Transaction]!
 	}
 
@@ -102,15 +96,10 @@ const typeDefs = gql`
 
 	input ProfileInput {
 		userId: ID
-		avatar: ID
+		profileImageId: ID
 		license: String
 		firstName: String
 		lastName: String
-		address: String
-		secondaryAddress: String
-		state: String
-		zipCode: String
-		dob: String
 		rating: Int
 		renting: Boolean
 	}
@@ -144,10 +133,12 @@ const typeDefs = gql`
 	}
 
 	type Query {
-		profile(id: ID!): Profile 
+		profile: Profile 
 		owner(id: ID!): CarOwner
 		cars(filter: CarFilter): [Car]
 		car(id: ID!): Car
+		user(id: ID!): Profile
+		getUser: User
 	}
 
 	type Mutation {
@@ -155,7 +146,6 @@ const typeDefs = gql`
 		updateProfile(input: ProfileInput, id: ID!): Profile
 		deleteProfile(id: ID!): String
 
-		addUser(input: UserInput): User
 		updateUser(input: UserInput, id: ID!): User
 		deleteUser(id: ID!): String
 
@@ -163,18 +153,12 @@ const typeDefs = gql`
 		updateCar(input: CarInput): Car
 		deleteCar(id: ID!): String
 
-		addCarOwner(input: CarOwnerInput!): CarOwner
-		updateCarOwner(input: CarOwnerInput, id: ID!): CarOwner
-		deleteCarOwner(id: ID!): String
-
 		addTransaction(input: TransactionInput): Transaction
 		updateTransaction(input: TransactionInput): Transaction
 		deleteTransaction(id: ID!): String
 
-		uploadProfileImage(file: Upload!): File
-		deleteProfileImage(id: ID!): String
-		uploadCarImage(file: Upload!): File
-		deleteCarImage(id: ID!): String
+		uploadProfileImage(file: Upload!): ProfileImage
+		uploadCarImage(file: Upload!): CarImage
 	}
 
 `;

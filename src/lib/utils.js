@@ -13,17 +13,17 @@ module.exports = {
 	encodedCursor,
 };
 
-function createToken(profile) {
-	console.log("creating token", )
-	if (!profile.app_metadata.roles) {
+function createToken(info) {
+	console.log("creating token")
+	if (!info.app_metadata.roles) {
 		throw new UserInputError("error, not complete");
 	}
 
 	return jwt.sign(
 		{
-			sub: profile.sub,
-			app_metadata: profile.app_metadata,
-			expiresAt: profile.expiresAt
+			sub: info.sub,
+			app_metadata: info.app_metadata,
+			expiresAt: info.expiresAt
 		},
 		process.env.JWT_SECRET,
 		{ algorithm: "HS256", expiresIn: "5h" }
@@ -31,15 +31,20 @@ function createToken(profile) {
 };
 
 function hashPassword(password) {
-	return new Promise((resolve, reject) => {
-		bcrypt.genSalt(12, (err, salt) => {
-			if (err) { reject(err); }
-			bcrypt.hash(password, salt, (error, hash) => {
-				if (error) { reject(error); }
-				resolve(hash);
-			});
-		});
-	});
+  return new Promise((resolve, reject) => {
+    // Generate a salt at level 12 strength
+    bcrypt.genSalt(12, (err, salt) => {
+      if (err) {
+        reject(err);
+      }
+      bcrypt.hash(password, salt, (err, hash) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(hash);
+      });
+    });
+  });
 };
 
 function verifyPassword(attempt, hashed) {

@@ -6,7 +6,10 @@ module.exports = {
 	findUser,
 	create,
 	update,
-	remove
+	remove,
+	Image: {
+		insert
+	}
 }
 
 
@@ -27,8 +30,11 @@ async function findUser(id) {
 	return user
 }
 
-function create(input) {
-	return db('profile').insert(input).returning('*')
+async function create(input) {
+	const profiles = await db('profile').insert(input).returning('*')
+	const profile = profiles[0]
+	console.log(profile)
+	return findOne({ id: profile.id })
 }
 
 function update(input, id) {
@@ -38,4 +44,9 @@ function update(input, id) {
 async function remove(id) {
 	const [identifier] = await db('profile').where(id).del().returning('id')
 	return `deleted ${identifier}`
+}
+
+async function insert(input) {
+	const [id] = await db('profileImage').insert(input).returning("id");
+	return findImage({ id });
 }

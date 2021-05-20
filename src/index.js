@@ -144,11 +144,9 @@ app.post('/login', async (req, res) => {
 			const info = Object.assign({}, { sub: id, app_metadata, expiresAt })
 			const token = createToken(info)
 
-			const savedToken = await models.Token.create({
-				refreshToken: token,
-				userId: id,
-				expiresAt
-			})
+			const input = { refreshToken: token, expiresAt }
+
+			const savedToken = await models.Token.update(input, { userId: id })
 
 			console.log('saved token')
 

@@ -29,6 +29,7 @@ const typeDefs = gql`
 		firstName: String!
 		lastName: String!
 		rating: Int!
+		cars: [Car]
 		transactions: [Transaction]!
 	}
 
@@ -44,18 +45,11 @@ const typeDefs = gql`
 		year: String!
 		vin: String!
 		condition: String!
-		image: CarImage!
+		available: Boolean!
 		ratePerDay: Int!
 		maxMilesPerDay: Int!
-		available: Boolean!
-		owner: CarOwner!
-	}
-
-	type CarOwner {
-		id: ID!
-		profile: Profile!
-		cars: [Car]!
-		transactions: [Transaction]!	
+		image: CarImage!
+		owner: Profile!
 	}
 
 	enum Status {
@@ -67,28 +61,8 @@ const typeDefs = gql`
 		COMPLETED
 	}
 
-	enum CarFilter {
-		AUDI
-		MERCEDES
-		LAMBORGHINI
-		ASTON_MARTIN
-		JEEP
-		FORD
-		TOYOTA
-		TESLA
-		BMW
-		MAZDA
-		HONDA
-		KIA
-		FERRARI
-		VOLVO
-		CHRYSLER
-		HYUNDAI
-	}
-
 	type Transaction {
 		id: ID!
-		owner: CarOwner!
 		renter: Profile!
 		car: Car!
 		status: Status! 
@@ -102,11 +76,6 @@ const typeDefs = gql`
 		lastName: String
 		rating: Int
 		renting: Boolean
-	}
-
-	input UserInput {
-		email: String
-		password: String
 	}
 
 	input CarInput {
@@ -129,31 +98,21 @@ const typeDefs = gql`
 		status: Status!
 	}
 
+	enum Filter {
+		profileId
+		make
+		model
+		year
+	}
+
+
 	type Query {
-		profile: Profile 
-		owner(id: ID!): [Car]
-		cars(filter: CarFilter): [Car]
+		cars(filter: Filter, id: ID): [Car]
 		car(id: ID!): Car
-		user(id: ID!): Profile
-		getUser: User
+		profile(id: ID!): Profile
 	}
 
 	type Mutation {
-		addProfile(input: ProfileInput!): Profile
-		updateProfile(input: ProfileInput, id: ID!): Profile
-		deleteProfile(id: ID!): String
-
-		updateUser(input: UserInput, id: ID!): User
-		deleteUser(id: ID!): String
-
-		addCar(input: CarInput): Car
-		updateCar(input: CarInput): Car
-		deleteCar(id: ID!): String
-
-		addTransaction(input: TransactionInput): Transaction
-		updateTransaction(input: TransactionInput): Transaction
-		deleteTransaction(id: ID!): String
-
 		uploadProfileImage(file: Upload!): ProfileImage
 		uploadCarImage(file: Upload!): CarImage
 	}

@@ -3,33 +3,19 @@ const db = require('../config/knex')
 module.exports = {
 	findOne,
 	create,
-	findByIdAndUpdate,
-	findByIdAndDelete,
-	saveRefreshToken
+	update
 }
 
 function findOne(filter) {
-	return db('token').where(filter).first(); 
-}
-async function create(input) {
-	const [id] = await db('token').insert(input).returning('id');
-	return findOne({id});
-}
-async function findByIdAndUpdate(identifier, input) { 
-	const [id] = await db('token').where(identifier).update(input).returning('id');
-	return findOne({id});
-}
-async function findByIdAndDelete(id) { 
-	const [identifier] = await db('token').where({ id }).del().returning('id'); 
-	return `deleted ${identifier}`;
+	return db('token').where(filter).first()
 }
 
-async function saveRefreshToken(profileId, refreshToken) {
-	try {
-		const token = await findByIdAndUpdate({id}, {refreshToken})
-		if (!token) { throw new ApolloError("refresh vague answer"); }
-		return token;
-	} catch (err) {
-		return err;
-	}
+async function create(input) {
+	const [id] = await db('token').insert(input).returning('id')
+	return findOne({ id })
+}
+
+async function update(input, filter) {
+	const [id] = await db('token').where(filter).insert(input).returning('id')
+	return findOne({ id })
 }

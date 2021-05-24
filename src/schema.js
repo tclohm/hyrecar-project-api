@@ -38,18 +38,30 @@ const typeDefs = gql`
 		image: File
 	}
 
+	type Rating {
+		id: ID!
+		interiors: Float!
+		exteriors: Float!
+		steering: Float!
+		braking: Float!
+		acceleration: Float!
+		cleaniness: Float!
+		review: String!
+	}
+
 	type Car {
 		id: ID!
 		make: String!
 		model: String!
 		year: String!
 		vin: String!
-		condition: String!
 		available: Boolean!
 		ratePerDay: Int!
 		maxMilesPerDay: Int!
+		airConditioning: Boolean!
 		image: CarImage!
 		owner: Profile!
+		rating: Rating!
 	}
 
 	enum Status {

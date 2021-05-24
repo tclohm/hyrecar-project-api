@@ -1,5 +1,5 @@
 exports.up = async knex => {
-	return await knex.schema.createTable('carRating', table => {
+	return await knex.schema.createTable('rating', table => {
 		table.increments('id')
 		table.float('interiors').notNullable()
 		table.float('exteriors').notNullable()
@@ -8,9 +8,10 @@ exports.up = async knex => {
 		table.float('acceleration').notNullable()
 		table.float('cleaniness').notNullable()
 		table.string('review', 1000).notNullable()
+		table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now())
 	})
 }
 
 exports.down = async knex => {
-	await knex.schema.dropTableIfExists('carRating'); 
+	await knex.schema.dropTableIfExists('rating'); 
 }

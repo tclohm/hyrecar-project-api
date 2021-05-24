@@ -16,6 +16,13 @@ exports.up = async knex => {
 			.inTable('rating')
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE')
+		table.uuid('profileId')
+			.unsigned()
+			.notNullable()
+			.references('id')
+			.inTable('profile')
+			.onDelete('CASCADE')
+			.onUpdate('CASCADE')
 	})
 }
 

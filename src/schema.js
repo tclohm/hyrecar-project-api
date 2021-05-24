@@ -47,6 +47,7 @@ const typeDefs = gql`
 		acceleration: Float!
 		cleaniness: Float!
 		review: String!
+		reviewer: Profile!
 	}
 
 	type Car {
@@ -61,7 +62,7 @@ const typeDefs = gql`
 		airConditioning: Boolean!
 		image: CarImage!
 		owner: Profile!
-		rating: Rating!
+		rating: [Rating]!
 	}
 
 	enum Status {
@@ -101,7 +102,6 @@ const typeDefs = gql`
 		available: Boolean
 		carImageId: ID
 		profileId: ID
-
 	}
 
 	input TransactionInput {

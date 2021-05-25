@@ -80,6 +80,9 @@ module.exports = {
 		},
 		owner(car, _, {models}) {
 			return models.Profile.findOne({ id: car.profileId })
+		},
+		rating(car, _, {models})  {
+			return models.Rating.find({ carId: car.id })
 		}
 	},
 	Profile: {
@@ -88,6 +91,11 @@ module.exports = {
 		},
 		cars(owner, _, {models}) {
 			return models.Car.find({ profileId: owner.id })
+		}
+	},
+	Rating: {
+		reviewer(rating, _, {models}) {
+			return models.Profile.findOne({ id: rating.profileId })
 		}
 	}
 }

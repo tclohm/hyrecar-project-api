@@ -1,20 +1,19 @@
 exports.up = async knex => {
 	knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
-	return await knex.schema.createTable('car', table => {
+	return await knex.schema.createTable('carRating', table => {
 		table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'))
-		table.string('make').notNullable()
-		table.string('model').notNullable()
-		table.string('year').notNullable()
-		table.string('vin').notNullable()
-		table.string('condition').notNullable()
-		table.boolean('available').defaultTo(true)
-		table.decimal('ratePerDay').notNullable()
-		table.integer('maxMilesPerDay').notNullable()
-		table.integer('carImageId')
+		table.uuid('carId')
 			.unsigned()
 			.notNullable()
 			.references('id')
-			.inTable('carImage')
+			.inTable('car')
+			.onDelete('CASCADE')
+			.onUpdate('CASCADE')
+		table.integer('ratingId')
+			.unsigned()
+			.notNullable()
+			.references('id')
+			.inTable('rating')
 			.onDelete('CASCADE')
 			.onUpdate('CASCADE')
 		table.uuid('profileId')
@@ -28,6 +27,6 @@ exports.up = async knex => {
 }
 
 exports.down = async knex => {
-	await knex.schema.dropTableIfExists('car'); 
+	await knex.schema.dropTableIfExists('carRating'); 
 	knex.raw('drop extension if exists "uuid-ossp"');
 }

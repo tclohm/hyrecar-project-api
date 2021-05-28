@@ -65,6 +65,17 @@ const typeDefs = gql`
 		rating: [Rating]!
 	}
 
+	enum CarType {
+		ALL
+		MICROCAR
+		MINICOMPACT
+		SUBCOMPACT
+		COMPACT
+		MID_SIZE
+		FULL_SIZE
+		FULL_SIZE_LUXURY
+	}
+
 	enum Status {
 		REJECT
 		PENDING
@@ -110,16 +121,8 @@ const typeDefs = gql`
 		status: Status!
 	}
 
-	enum Filter {
-		profileId
-		make
-		model
-		year
-	}
-
-
 	type Query {
-		cars(filter: Filter, id: ID): [Car]
+		cars(type: CarType, year: Int, id: ID): [Car]
 		car(id: ID!): Car
 		profile(id: ID!): Profile
 	}

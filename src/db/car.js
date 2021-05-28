@@ -17,9 +17,10 @@ async function findImage(id) {
 	return { id: image.id, image }
 }
 
-function find(filter, id) {
-	if (filter && id) { return db('car').where(filter, id).select('*') }
-	if (filter) { return db('car').where(filter).select('*') }
+function find(type, year, id) {
+	if (type && year) { return db('car').where(type).where('year', '>=', year).select('*') }
+	if (type) { return db('car').where(type).select('*') }
+	if (year) { return db('car').where('year', '>=', year).select('*') }
 	return db('car').select('*')
 }
 

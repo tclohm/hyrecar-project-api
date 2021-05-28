@@ -6,6 +6,7 @@ exports.up = async knex => {
 		table.string('model').notNullable()
 		table.string('year').notNullable()
 		table.string('vin').notNullable()
+		table.string('type').notNullable()
 		table.boolean('available').defaultTo(true)
 		table.decimal('ratePerDay').notNullable()
 		table.integer('maxMilesPerDay').notNullable()

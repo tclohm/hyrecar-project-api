@@ -2,6 +2,7 @@ const { gql } = require('apollo-server-express')
 
 const typeDefs = gql`
 	scalar Upload
+	scalar DateTime
 
 	type File {
 		name: String!
@@ -14,6 +15,7 @@ const typeDefs = gql`
 		id: ID!
 		email: String!
 		password: String!
+		createdAt: DateTime!
 	}
 
 	type ProfileImage {
@@ -56,6 +58,7 @@ const typeDefs = gql`
 		model: String!
 		year: String!
 		vin: String!
+		type: CarType!
 		available: Boolean!
 		ratePerDay: Int!
 		maxMilesPerDay: Int!

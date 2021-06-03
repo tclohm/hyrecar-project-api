@@ -63,6 +63,17 @@ const typeDefs = gql`
 		ratePerDay: Int!
 		maxMilesPerDay: Int!
 		airConditioning: Boolean!
+		automaticEmergencyBrakes: Boolean!
+		forwardCollisionWarning: Boolean!
+		blindSpotWarning: Boolean!
+		automaticHighBeams: Boolean!
+		carPlay: Boolean!
+		rearCamera: Boolean!
+		USBCharging: Boolean!
+		keylessEntry: Boolean!
+		headupDisplay: Boolean!
+		heatedSeats: Boolean!
+		wifiHotSpot: Boolean!
 		image: CarImage!
 		owner: Profile!
 		rating: [Rating]!

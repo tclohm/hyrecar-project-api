@@ -5,8 +5,8 @@ const { ApolloError, UserInputError } = require('apollo-server-express')
 
 module.exports = {
 	Query: {
-		cars(_, {filter, id}, {models}) {
-			return models.Car.find(filter, id)
+		cars(_, {type, year, id}, {models}) {
+			return models.Car.find(type, year, id)
 		},
 		car(_, {id}, {models}) {
 			return models.Car.findOne({ id })
@@ -90,7 +90,10 @@ module.exports = {
 			return models.Profile.findImage({ id: owner.profileImageId })
 		},
 		cars(owner, _, {models}) {
-			return models.Car.find({ profileId: owner.id })
+			return models.Car.findByProfileId({ profileId: owner.id })
+		},
+		user(profile, _, {models}) {
+			return models.User.findOne({ id: profile.userId })
 		}
 	},
 	Rating: {

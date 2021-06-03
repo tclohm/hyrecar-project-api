@@ -2,6 +2,7 @@ const { gql } = require('apollo-server-express')
 
 const typeDefs = gql`
 	scalar Upload
+	scalar DateTime
 
 	type File {
 		name: String!
@@ -14,6 +15,7 @@ const typeDefs = gql`
 		id: ID!
 		email: String!
 		password: String!
+		createdAt: DateTime!
 	}
 
 	type ProfileImage {
@@ -56,13 +58,36 @@ const typeDefs = gql`
 		model: String!
 		year: String!
 		vin: String!
+		type: CarType!
 		available: Boolean!
 		ratePerDay: Int!
 		maxMilesPerDay: Int!
 		airConditioning: Boolean!
+		automaticEmergencyBrakes: Boolean!
+		forwardCollisionWarning: Boolean!
+		blindSpotWarning: Boolean!
+		automaticHighBeams: Boolean!
+		carPlay: Boolean!
+		rearCamera: Boolean!
+		USBCharging: Boolean!
+		keylessEntry: Boolean!
+		headupDisplay: Boolean!
+		heatedSeats: Boolean!
+		wifiHotSpot: Boolean!
 		image: CarImage!
 		owner: Profile!
 		rating: [Rating]!
+	}
+
+	enum CarType {
+		ALL
+		MICROCAR
+		MINICOMPACT
+		SUBCOMPACT
+		COMPACT
+		MID_SIZE
+		FULL_SIZE
+		FULL_SIZE_LUXURY
 	}
 
 	enum Status {
@@ -110,16 +135,8 @@ const typeDefs = gql`
 		status: Status!
 	}
 
-	enum Filter {
-		profileId
-		make
-		model
-		year
-	}
-
-
 	type Query {
-		cars(filter: Filter, id: ID): [Car]
+		cars(type: CarType, year: Int, id: ID): [Car]
 		car(id: ID!): Car
 		profile(id: ID!): Profile
 	}

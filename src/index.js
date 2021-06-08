@@ -102,7 +102,7 @@ app.post('/signup', async (req, res) => {
 				expiresAt
 			})
 
-			console.log('saved token')
+			console.log('saved token', savedToken)
 
 			if (!savedToken) {
 				res.status.json({ success: false })
@@ -139,16 +139,11 @@ app.post('/login', async (req, res) => {
 		if (valid) {
 			const { id } = user
 			const { app_metadata } = await models.Profile.findOne({ userId: id })
-			console.log(app_metadata)
 			const expiresAt = getDatePlusFiveHours()
 			const info = Object.assign({}, { sub: id, app_metadata, expiresAt })
 			const token = createToken(info)
 
-			const input = { refreshToken: token, expiresAt }
-
-			const savedToken = await models.Token.update(input, { userId: id })
-
-			console.log('saved token')
+			const savedToken = await models.Token.update({ refreshToken: token, expiresAt }, { userId: id })
 
 			if (!savedToken) {
 				res.status.json({ success: false })
@@ -163,6 +158,7 @@ app.post('/login', async (req, res) => {
 
 			res.status(200).json({ success: true })
 		} else {
+			console.log("what?")
 			res.json({ success: false })
 		}
 	} catch (err) {

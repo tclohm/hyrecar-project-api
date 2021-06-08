@@ -139,10 +139,12 @@ const typeDefs = gql`
 		cars(type: CarType, year: Int, id: ID): [Car]
 		car(id: ID!): Car
 		profile(id: ID!): Profile
+		self: Profile
 	}
 
 	type Mutation {
 		uploadProfileImage(file: Upload!): ProfileImage
+		addProfile(profile: ProfileInput!): Profile
 		uploadCarImage(file: Upload!): CarImage
 	}
 

@@ -17,5 +17,6 @@ async function create(input) {
 
 async function update(input, filter) {
 	const [id] = await db('token').where(filter).insert(input).returning('id')
+	console.log("create", id)
 	return findOne({ id })
 }

@@ -13,9 +13,22 @@ module.exports = {
 		},
 		profile(_, {id}, {models}) {
 			return models.Profile.findOne({ id })
+		},
+		self(_, args, {sub, app_metadata, models}) {
+			if(!sub) {
+				return null
+			}
+			return models.Profile.findOne({ userId: sub })
 		}
 	},
 	Mutation: {
+		async addProfile(_, {profile}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('create:own_content')) {
+				return null
+			} 
+			const data = {...profile, userId: sub }
+			return models.Profile.add(data)
+		},
 		async uploadProfileImage(_, {file}, {sub, app_metadata, models}) {
 			if (!sub || !app_metadata.permissions.includes('create:own_content')) {
 				return null;

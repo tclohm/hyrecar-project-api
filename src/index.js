@@ -38,7 +38,6 @@ const context = ({ req, res }) => {
 	try {
 
 		if (token !== '') {
-			console.log(token)
 			const { sub, app_metadata } = jwt.verify(token, process.env.JWT_SECRET)
 			return { req, res, models, sub, app_metadata }
 		}
@@ -73,21 +72,20 @@ app.post('/signup', async (req, res) => {
 			return
 		}
 
-		console.log("hashing")
-
 		const hashedPassword = await hashPassword(password)
-
-		const app_metadata = {
-			roles: ['renter'],
-			permissions: ['create:own_content', 'edit:own_content', 'upload:own_media'],
-		}
 
 		const user = await models.User.create({
 			email,
 			password: hashedPassword
 		})
 
-		console.log("user created")
+		const { app_metadata } = await models.Profile.create({
+			userId: user.id,
+			profileImageId: 61,
+			license: '',
+			firstName: '',
+			lastName: '',
+		})
 
 		
 		if (user) {
@@ -101,8 +99,6 @@ app.post('/signup', async (req, res) => {
 				userId: id,
 				expiresAt
 			})
-
-			console.log('saved token', savedToken)
 
 			if (!savedToken) {
 				res.status.json({ success: false })
@@ -118,7 +114,6 @@ app.post('/signup', async (req, res) => {
 			res.status(200).json({ success: true })
 		}
 	} catch (err) {
-		console.log(err)
 		res.json({ sucess: false })
 	}
 })
@@ -138,6 +133,7 @@ app.post('/login', async (req, res) => {
 
 		if (valid) {
 			const { id } = user
+			console.log(id)
 			const { app_metadata } = await models.Profile.findOne({ userId: id })
 			const expiresAt = getDatePlusFiveHours()
 			const info = Object.assign({}, { sub: id, app_metadata, expiresAt })
@@ -158,10 +154,10 @@ app.post('/login', async (req, res) => {
 
 			res.status(200).json({ success: true })
 		} else {
-			console.log("what?")
 			res.json({ success: false })
 		}
 	} catch (err) {
+		console.log(err)
 		res.json({ success: false })
 	}
 })

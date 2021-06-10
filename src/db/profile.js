@@ -4,7 +4,8 @@ module.exports = {
 	insertImage,
 	findImage,
 	findOne,
-	add
+	create,
+	update
 }
 
 // MARK: Queries
@@ -23,7 +24,12 @@ function findOne(filter) {
 }
 
 // MARK: Mutations
-async function add(input) {
+async function create(input) {
 	const [id] = await db('profile').insert(input).returning('id')
+	return findOne({ id })
+}
+
+async function update(input, identity) {
+	const [id] = await db('profile').where(identity).update(input).returning('id')
 	return findOne({ id })
 }

@@ -26,8 +26,7 @@ module.exports = {
 			if (!sub || !app_metadata.permissions.includes('create:own_content')) {
 				return null
 			} 
-			const data = {...profile, userId: sub }
-			return models.Profile.add(data)
+			return models.Profile.update({...profile}, { userId: sub })
 		},
 		async uploadProfileImage(_, {file}, {sub, app_metadata, models}) {
 			if (!sub || !app_metadata.permissions.includes('create:own_content')) {

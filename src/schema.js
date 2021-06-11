@@ -82,7 +82,7 @@ const typeDefs = gql`
 	enum CarType {
 		ALL
 		SUV
-		TRUCH
+		TRUCK
 		SEDAN
 		VAN
 		COUPE

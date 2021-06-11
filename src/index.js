@@ -44,7 +44,6 @@ const context = ({ req, res }) => {
 
 		return { req, res, models }
 	} catch (error) {
-		console.log("error", error)
 		return { req, res, models }
 	}
 
@@ -133,7 +132,6 @@ app.post('/login', async (req, res) => {
 
 		if (valid) {
 			const { id } = user
-			console.log(id)
 			const { app_metadata } = await models.Profile.findOne({ userId: id })
 			const expiresAt = getDatePlusFiveHours()
 			const info = Object.assign({}, { sub: id, app_metadata, expiresAt })
@@ -157,7 +155,6 @@ app.post('/login', async (req, res) => {
 			res.json({ success: false })
 		}
 	} catch (err) {
-		console.log(err)
 		res.json({ success: false })
 	}
 })

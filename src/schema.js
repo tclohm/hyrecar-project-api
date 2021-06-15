@@ -150,6 +150,7 @@ const typeDefs = gql`
 	type Mutation {
 		uploadProfileImage(file: Upload!): ProfileImage
 		addProfile(profile: ProfileInput!): Profile
+		updateProfile(profile: ProfileInput!): Profile
 		uploadCarImage(file: Upload!): CarImage
 	}
 

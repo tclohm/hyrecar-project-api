@@ -30,7 +30,7 @@ No tests implemented as of now :(
 
 ### How it's built
 
-It's a simple Node.js/Postgres with Apollo/Graphql sitting on top of it respond to queries and mutations. It's pretty straightforward. Authentication comes from a cookie on the server and checks for permissions at each request.
+It's a simple Node.js/Postgres with Apollo/Graphql sitting on top waiting for queries and mutations. It's pretty straightforward. Authentication comes from a cookie on the server and checks for permissions at each request.
 The application is not hosted because it's still in development.
 
 ### Client side

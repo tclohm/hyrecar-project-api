@@ -34,6 +34,12 @@ module.exports = {
 			}
 			return models.Profile.update({...profile}, { userId: sub })
 		},
+		async updateUser(_, {user}, {sub, app_metadata, models}) {
+			if (!sub || !app_metadata.permissions.includes('edit:own_content')) {
+				return null
+			}
+			return models.User.update({...user}, { id: sub })
+		},
 		async uploadProfileImage(_, {file}, {sub, app_metadata, models}) {
 			if (!sub || !app_metadata.permissions.includes('create:own_content')) {
 				return null;

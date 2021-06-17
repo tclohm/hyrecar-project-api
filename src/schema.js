@@ -111,6 +111,11 @@ const typeDefs = gql`
 		status: Status! 
 	}
 
+	input UserInput {
+		email: String
+		password: String
+	}
+
 	input ProfileInput {
 		userId: ID
 		profileImageId: ID
@@ -151,6 +156,7 @@ const typeDefs = gql`
 		uploadProfileImage(file: Upload!): ProfileImage
 		addProfile(profile: ProfileInput!): Profile
 		updateProfile(profile: ProfileInput!): Profile
+		updateUser(user: UserInput!): User
 		uploadCarImage(file: Upload!): CarImage
 	}
 

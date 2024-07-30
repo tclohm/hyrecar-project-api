@@ -1,19 +1,20 @@
-require("dotenv").config();
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
-const helmet = require('helmet');
+from("dotenv").config();
+import express  from 'express'
+import cors from 'cors'
+import path from 'path'
+import jwt from 'jsonwebtoken'
+import cookieParser from 'cookie-parser'
+import helmet from 'helmet'
 
-const { createToken, hashPassword, verifyPassword, getDatePlusFiveHours } = require('./lib/utils');
+import { createToken, hashPassword, verifyPassword, getDatePlusFiveHours } from './lib/utils'
 
-const { ApolloServer, AuthenticationError } = require('apollo-server-express');
-const { graphqlUploadExpress } = require('graphql-upload');
+import { ApolloServer, AuthenticationError } from 'apollo-server-express'
 
-const typeDefs = require('./schema');
-const resolvers = require('./resolvers');
-const { models } = require('./db');
+import { graphqlUploadExpress } from 'graphql-upload/graphqlUploadExpress'
+
+const typeDefs = require('./schema')
+const resolvers = require('./resolvers')
+const { models } = require('./db')
 
 const port = process.env.PORT || 4000;
 const url = process.env.SERVICE_URL || 'http://localhost:4000';
@@ -33,7 +34,7 @@ app.use("/static/assets/images", express.static(path.join(__dirname, "../static/
 app.use(graphqlUploadExpress({ maxFileSize: 1000000000, maxFiles: 10 }));
 
 const context = ({ req, res }) => {
-	const token = req.cookies['jwt'] || ''
+  const token = req.cookies['jwt'] || ''
 
 	try {
 

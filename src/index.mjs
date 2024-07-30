@@ -14,7 +14,8 @@ import { createToken, hashPassword, verifyPassword, getDatePlusFiveHours } from 
 
 import typeDefs from './schema.js'
 import resolvers from './resolvers.js'
-import { models } from './db.js'
+import models from './db/index.js'
+
 
 const port = process.env.PORT || 4000;
 const url = process.env.SERVICE_URL || 'http://localhost:4000';

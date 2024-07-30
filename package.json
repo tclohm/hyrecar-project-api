@@ -28,5 +28,8 @@
   "scripts": {
     "start": "node src/index.mjs",
     "dev": "nodemon src/index.mjs"
+  },
+  "volta": {
+    "node": "20.16.0"
   }
 }

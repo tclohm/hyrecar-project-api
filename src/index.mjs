@@ -1,4 +1,4 @@
-from("dotenv").config();
+import ("dotenv")
 import express  from 'express'
 import cors from 'cors'
 import path from 'path'
@@ -6,15 +6,15 @@ import jwt from 'jsonwebtoken'
 import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
 
-import { createToken, hashPassword, verifyPassword, getDatePlusFiveHours } from './lib/utils'
-
 import { ApolloServer, AuthenticationError } from 'apollo-server-express'
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs'
 
-import { graphqlUploadExpress } from 'graphql-upload/graphqlUploadExpress'
+import { createToken, hashPassword, verifyPassword, getDatePlusFiveHours } from './lib/utils.js'
 
-const typeDefs = require('./schema')
-const resolvers = require('./resolvers')
-const { models } = require('./db')
+
+import typeDefs from './schema.js'
+import resolvers from './resolvers.js'
+import { models } from './db.js'
 
 const port = process.env.PORT || 4000;
 const url = process.env.SERVICE_URL || 'http://localhost:4000';
